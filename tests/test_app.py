@@ -27,3 +27,9 @@ def test_return_json_when_post_on_create_pingout(client):
     """ Return json dict when post on create pingout url """
     response = client.post('/create-pingout')
     assert response.json
+
+
+def test_return_uuid_when_post_on_create_pingout(client):
+    """ Return uuid when post on create_pingout url """
+    response = client.post('/create-pingout')
+    assert 'uuid' in response.json.keys()

@@ -19,7 +19,7 @@ def create_app(test_config=None):
 
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():
-        response = jsonify({'status': 'created'})
+        response = jsonify({'uuid': ''})
         response.status_code = 201
         return response
 
