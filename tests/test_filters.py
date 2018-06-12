@@ -36,7 +36,29 @@ def test_filter_pings_by_date(pingout, db_collection):
 
 
 def test_filter_pings_by_range_of_date_invalid(pingout, db_collection):
-    """ Raise ValueError if one of dates is invalid"""
+    """ Raise ValueError if one of dates is invalid """
 
     with pytest.raises(ValueError):
         filter_pings_range_of_dates(pingout, db_collection, 'date', 'date')
+
+
+def test_filter_pings_by_range_of_date(pingout, db_collection):
+    """ FIlter all pings of a date range """
+
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2018, 8, 17)}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2020, 8, 17)}}})
+
+    initial = datetime.date(2018, 1, 1)
+    final = datetime.date(2018, 12, 20)
+
+    pings = filter_pings_range_of_dates(pingout, db_collection, initial, final)
+
+    assert len(pings) == 3

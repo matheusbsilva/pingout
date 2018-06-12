@@ -29,3 +29,12 @@ def filter_pings_range_of_dates(uuid, collection, initial, final):
 
         raise ValueError('Invalid date type')
 
+    pings = filter_pingout_all_pings(uuid, collection)
+    pings_range = []
+
+    for ping in pings:
+        if ping['date'] >= initial and ping['date'] <= final:
+            pings_range.append(ping)
+
+    return pings_range
+
