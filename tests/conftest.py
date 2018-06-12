@@ -3,6 +3,7 @@ import mongomock
 
 from pingout import create_app
 from pingout.db import connect_to_database
+from pingout.db import connect_to_collection
 
 
 @pytest.fixture
@@ -23,3 +24,9 @@ def client(app):
 def db():
     """ Mongomock for db tests """
     return connect_to_database(engine=mongomock, host='test', port=10)
+
+
+@pytest.fixture
+def db_collection(db):
+    """ Main db collection """
+    return connect_to_collection(db=db)

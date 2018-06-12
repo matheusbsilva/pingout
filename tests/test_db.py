@@ -11,3 +11,7 @@ def test_connect_to_database_client_address(db):
 
 def test_connect_to_database_main_database(db):
     assert db.name is 'pingout_db'
+
+
+def test_main_collection(db_collection):
+    assert db_collection.name is 'pings_history'
