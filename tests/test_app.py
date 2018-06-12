@@ -139,3 +139,18 @@ def test_first_ping_push_count_is_1_on_ping(client, pingout, db_collection):
     ping_pushed = db_collection.find_one({'uuid': pingout})['pings'][0]
 
     assert ping_pushed['count'] == 1
+
+
+def test_count_ping_pushed_is_sum_of_previous(client, pingout, db_collection):
+    """ Count of ping pushed to the list is the sum
+    of the previous ping count """
+
+    db_collection.update_one({'uuid': pingout},
+                             {'$push': {'pings': {'count': 1, 'date': 1}}})
+
+    client.post('/{}/ping'.format(pingout))
+
+    ping_pushed = db_collection.find_one({'uuid': pingout})['pings'][-1]
+
+    assert ping_pushed['count'] == 2
+
