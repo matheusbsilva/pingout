@@ -84,3 +84,12 @@ def test_return_400_post_on_ping_for_bad_uuid(client):
 
     assert response.status_code == 400
     assert response.json['errors'] == 'Bad format uuid'
+
+
+def test_return_201_post_on_ping_ok_format(client):
+    """ Return 201 for uuid with correct format when post on ping url """
+    from uuid import uuid4
+    uuid = uuid4().hex
+    response = client.post('/{}/ping'.format(uuid))
+
+    assert response.status_code == 201
