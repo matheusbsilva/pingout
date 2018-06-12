@@ -1,17 +1,7 @@
-import pytest
 import datetime
 from uuid import uuid4
 
 from pingout.utils import validate_uuid
-from pingout import TIMEZONE
-
-
-@pytest.fixture
-def pingout(db_collection):
-    uuid = uuid4().hex
-    db_collection.insert_one({'uuid': uuid, 'pings': []})
-
-    return uuid
 
 
 def test_return_200_on_root(client):

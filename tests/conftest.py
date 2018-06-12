@@ -1,5 +1,6 @@
 import pytest
 import mongomock
+from uuid import uuid4
 
 from pingout import create_app
 from pingout.db import connect_to_database
@@ -30,3 +31,11 @@ def db():
 def db_collection(db):
     """ Main db collection """
     return connect_to_collection(db=db)
+
+
+@pytest.fixture
+def pingout(db_collection):
+    uuid = uuid4().hex
+    db_collection.insert_one({'uuid': uuid, 'pings': []})
+
+    return uuid
