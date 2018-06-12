@@ -110,3 +110,12 @@ def test_return_404_post_on_ping_not_created_pingout(client):
     response = client.post('/{}/ping'.format(uuid))
 
     assert response.status_code == 404
+
+
+def test_create_push_new_ping_post_on_ping(client, pingout, db_collection):
+    """ Push new ping on the list of pingout pings """
+
+    client.post('/{}/ping'.format(pingout))
+
+    assert db_collection.find_one({'uuid': pingout})['pings']
+
