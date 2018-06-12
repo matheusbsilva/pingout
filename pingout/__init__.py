@@ -1,5 +1,7 @@
 import os
 from flask import Flask
+from flask import request
+from flask import Response
 
 
 def create_app(test_config=None):
@@ -10,9 +12,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/")
+    @app.route("/", methods=['GET', 'POST'])
     def hello():
-        return "PINGOUT"
+        if request.method == 'POST':
+            return Response(status=201)
+        else:
+            return "PINGOUT"
 
     return app
 
