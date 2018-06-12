@@ -1,3 +1,13 @@
+from uuid import UUID
+
+
+def validate_uuid(uuid_string):
+    try:
+        val = UUID(uuid_string, version=4)
+    except ValueError:
+        return False
+    return val.hex == uuid_string
+
 
 def test_return_200_on_root(client):
     """ Return status code 200 on root url"""
@@ -39,3 +49,9 @@ def test_return_not_empty_uuid_post_on_create_pingout(client):
     """ Return not empty uuid when post on create_pingout url """
     response = client.post('/create-pingout')
     assert response.json['uuid']
+
+
+def test_return_valid_uuid4_post_on_create_pingout(client):
+    """ Return valid uuid version 4 when post on create_pingout url """
+    response = client.post('/create-pingout')
+    assert validate_uuid(response.json['uuid'])
