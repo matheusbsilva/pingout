@@ -131,3 +131,11 @@ def test_pushed_ping_values_post_on_ping(client, pingout, db_collection):
     assert 'date' in ping_pushed.keys()
 
 
+def test_first_ping_push_count_is_1_on_ping(client, pingout, db_collection):
+    """ First ping pushd count must be 1 """
+
+    client.post('/{}/ping'.format(pingout))
+
+    ping_pushed = db_collection.find_one({'uuid': pingout})['pings'][0]
+
+    assert ping_pushed['count'] == 1
