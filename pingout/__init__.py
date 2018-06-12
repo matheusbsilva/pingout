@@ -7,6 +7,8 @@ from flask import jsonify
 from flask import Response
 from flask import request
 from flask import redirect
+from flask import render_template
+from flask import send_from_directory
 from dateutil import parser
 
 from pingout.db import connect_to_database
@@ -17,7 +19,7 @@ from pingout.filters import filter_occurrences_ping_range_date
 
 
 def create_app(test_config=None, db=connect_to_database()):
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, template_folder='../pingout/templates')
     collection = connect_to_collection(db)
 
     try:
@@ -25,9 +27,9 @@ def create_app(test_config=None, db=connect_to_database()):
     except OSError:
         pass
 
-    @app.route("/", methods=['GET'])
+    @app.route("/")
     def root():
-        return "PINGOUT"
+        return "PINGOUT!"
 
     @app.route("/<string:pingout_uuid>", methods=['GET'])
     def get_pingouts_occur_range_date(pingout_uuid):
@@ -51,7 +53,15 @@ def create_app(test_config=None, db=connect_to_database()):
 
     @app.route("/<string:pingout_uuid>/download")
     def download_filtered_file(pingout_uuid):
-        pass
+        if request.method == 'GET':
+            filename = "{}.csv".format(pingout_uuid)
+            return render_template('download.html',
+                                   uuid=pingout_uuid,
+                                   filename=filename)
+
+    @app.route("/<string:pingout_uuid>/download/<path:filename>")
+    def download_file(pingout_uuid, filename):
+        return send_from_directory(directory='../files', filename=filename)
 
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():

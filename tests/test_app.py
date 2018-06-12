@@ -212,3 +212,26 @@ def test_redirect_after_save_file_pingout_occur(client, pingout, db_collection):
     response = client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
     redirect_url = response.location.split('http://localhost')[-1]
     assert redirect_url == "/{}/download".format(pingout)
+
+
+def test_return_200_on_get_download_page(client, pingout):
+    """ Return 200 when get on download page """
+
+    response = client.get('/{}/download'.format(pingout))
+
+    assert response.status_code == 200
+
+
+def test_return_200_on_get_download_file(client, pingout, db_collection):
+    """ Return 200 when get on download file url """
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+
+    client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
+    response = client.get('{}/download/{}.csv'.format(pingout, pingout))
+
+    assert response.status_code == 200
+
+
