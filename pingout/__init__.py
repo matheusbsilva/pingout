@@ -37,7 +37,7 @@ def create_app(test_config=None, db=connect_to_database()):
             pingout = collection.find_one({'uuid': pingout_uuid})
             if pingout:
                 collection.update_one({'uuid': pingout_uuid},
-                                      {'$push': {'pings': 1}})
+                                      {'$push': {'pings': {'count': 0, 'date': 0}}})
                 return Response(status=201)
             else:
                 response = jsonify(errors='Pingout not found')

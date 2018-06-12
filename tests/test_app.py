@@ -119,3 +119,15 @@ def test_create_push_new_ping_post_on_ping(client, pingout, db_collection):
 
     assert db_collection.find_one({'uuid': pingout})['pings']
 
+
+def test_pushed_ping_values_post_on_ping(client, pingout, db_collection):
+    """ Push ping with a dict containing count and date """
+
+    client.post('/{}/ping'.format(pingout))
+
+    ping_pushed = db_collection.find_one({'uuid': pingout})['pings'][0]
+
+    assert 'count' in ping_pushed.keys()
+    assert 'date' in ping_pushed.keys()
+
+
