@@ -1,7 +1,11 @@
 import pymongo
+import os
+
+DB_HOST = os.environ.get('MONGO_HOST', 'localhost')
+DB_PORT = os.environ.get('MONGO_PORT', 27017)
 
 
-def connect_to_database(engine=pymongo, host='localhost', port=27017):
+def connect_to_database(engine=pymongo, host=DB_HOST, port=DB_PORT):
     """ Connect to mongo db and return the main database """
     client = engine.MongoClient(host, port)
 
