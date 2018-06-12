@@ -21,3 +21,11 @@ def filter_pings_of_date(uuid, collection, date):
 
     return pings_data
 
+
+def filter_pings_range_of_dates(uuid, collection, initial, final):
+    """ Filter pings by range of date"""
+    if not isinstance(initial, datetime.date) or\
+            not isinstance(final, datetime.date):
+
+        raise ValueError('Invalid date type')
+
