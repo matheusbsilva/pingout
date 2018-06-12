@@ -7,6 +7,7 @@ from flask import Response
 
 from pingout.db import connect_to_database
 from pingout.db import connect_to_collection
+from pingout.utils import validate_uuid
 
 
 def create_app(test_config=None, db=connect_to_database()):
@@ -32,7 +33,12 @@ def create_app(test_config=None, db=connect_to_database()):
 
     @app.route("/<string:pingout_uuid>/ping", methods=['POST'])
     def ping(pingout_uuid):
-        return Response(status=201)
+        if validate_uuid(pingout_uuid):
+            return Response(status=201)
+        else:
+            response = jsonify(errors='Bad format uuid')
+            response.status_code = 400
+            return response
 
 
     return app
