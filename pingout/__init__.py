@@ -12,12 +12,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/", methods=['GET', 'POST'])
-    def hello():
-        if request.method == 'POST':
-            return Response(status=201)
-        else:
-            return "PINGOUT"
+    @app.route("/", methods=['GET'])
+    def root():
+        return "PINGOUT"
+
+    @app.route("/create-pingout", methods=['POST'])
+    def create_pingout():
+        return Response(status=201)
 
     return app
-
