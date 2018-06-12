@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask import request
 from flask import Response
+from flask import jsonify
 
 
 def create_app(test_config=None):
@@ -18,6 +19,8 @@ def create_app(test_config=None):
 
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():
-        return Response(status=201)
+        response = jsonify({'status': 'created'})
+        response.status_code = 201
+        return response
 
     return app
