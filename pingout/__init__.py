@@ -34,11 +34,16 @@ def create_app(test_config=None, db=connect_to_database()):
     @app.route("/<string:pingout_uuid>/ping", methods=['POST'])
     def ping(pingout_uuid):
         if validate_uuid(pingout_uuid):
-            return Response(status=201)
+            pingout = collection.find_one({'uuid': pingout_uuid})
+            if pingout:
+                return Response(status=201)
+            else:
+                response = jsonify(errors='Pingout not found')
+                response.status_code = 404
+                return response
         else:
             response = jsonify(errors='Bad format uuid')
             response.status_code = 400
             return response
-
 
     return app

@@ -1,4 +1,15 @@
+import pytest
+from uuid import uuid4
+
 from pingout.utils import validate_uuid
+
+
+@pytest.fixture
+def pingout(db_collection):
+    uuid = uuid4().hex
+    db_collection.insert_one({'uuid': uuid, 'pings': []})
+
+    return uuid
 
 
 def test_return_200_on_root(client):
@@ -86,10 +97,16 @@ def test_return_400_post_on_ping_for_bad_uuid(client):
     assert response.json['errors'] == 'Bad format uuid'
 
 
-def test_return_201_post_on_ping_ok_format(client):
+def test_return_201_post_on_ping_ok_format(client, pingout):
     """ Return 201 for uuid with correct format when post on ping url """
-    from uuid import uuid4
+    response = client.post('/{}/ping'.format(pingout))
+
+    assert response.status_code == 201
+
+
+def test_return_404_post_on_ping_not_created_pingout(client):
+    """ Return 404 when post on ping with a not created uuid pingout """
     uuid = uuid4().hex
     response = client.post('/{}/ping'.format(uuid))
 
-    assert response.status_code == 201
+    assert response.status_code == 404
