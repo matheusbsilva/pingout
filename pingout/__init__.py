@@ -1,4 +1,5 @@
 import os
+from uuid import uuid4
 from flask import Flask
 from flask import request
 from flask import Response
@@ -19,7 +20,8 @@ def create_app(test_config=None):
 
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():
-        response = jsonify({'uuid': '9cc41faf294f457583afcaf79a3f98ab'})
+        uuid = uuid4()
+        response = jsonify({'uuid': uuid.hex})
         response.status_code = 201
         return response
 

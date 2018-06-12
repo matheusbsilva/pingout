@@ -55,3 +55,11 @@ def test_return_valid_uuid4_post_on_create_pingout(client):
     """ Return valid uuid version 4 when post on create_pingout url """
     response = client.post('/create-pingout')
     assert validate_uuid(response.json['uuid'])
+
+
+def test_return_different_uuid4_post_on_create_pingout(client):
+    """ Return different uuids when post on create_pingout url"""
+    response1 = client.post('/create-pingout')
+    response2 = client.post('/create-pingout')
+
+    assert response1.json['uuid'] != response2.json['uuid']
