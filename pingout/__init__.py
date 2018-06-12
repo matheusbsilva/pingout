@@ -6,6 +6,7 @@ from flask import Flask
 from flask import jsonify
 from flask import Response
 from flask import request
+from flask import redirect
 from dateutil import parser
 
 from pingout.db import connect_to_database
@@ -44,7 +45,7 @@ def create_app(test_config=None, db=connect_to_database()):
                                                            collection, initial,
                                                            final)
                 from_json_to_csv(query, "{}.csv".format(pingout_uuid))
-                return Response(status=200)
+                return redirect('/{}/download'.format(pingout_uuid))
             else:
                 return Response(status=404)
 

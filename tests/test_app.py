@@ -200,3 +200,15 @@ def test_save_result_query_file_pingout_occur(client, pingout, db_collection):
 
     os.remove('files/{}.csv'.format(pingout))
 
+
+def test_redirect_after_save_file_pingout_occur(client, pingout, db_collection):
+    """ Redirect to file download after create csv with the query result """
+
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+
+    response = client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
+    redirect_url = response.location.split('http://localhost')[-1]
+    assert redirect_url == "/{}/download".format(pingout)
