@@ -24,7 +24,7 @@ def create_app(test_config=None, db=connect_to_database()):
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():
         uuid = uuid4()
-        collection.insert_one({'uuid': uuid.hex})
+        collection.insert_one({'uuid': uuid.hex, 'pings': []})
         response = jsonify({'uuid': uuid.hex})
         response.status_code = 201
         return response

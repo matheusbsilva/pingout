@@ -71,3 +71,13 @@ def test_save_uuid_on_db_post_create_pingout(client, db_collection):
 
     response = client.post('/create-pingout')
     assert db_collection.find_one({'uuid': response.json['uuid']})
+
+
+def test_create_empty_pings_list_post_create_pingout(client, db_collection):
+    """ Create an empty pings list for the new registry of the created uuid
+    when post on create-pingout url """
+
+    response = client.post('/create-pingout')
+    registry = db_collection.find_one({'uuid': response.json['uuid']})
+
+    assert registry['pings'] == []
