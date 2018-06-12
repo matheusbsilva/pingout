@@ -1,4 +1,6 @@
 import datetime
+import os
+
 from uuid import uuid4
 
 from pingout.utils import validate_uuid
@@ -168,9 +170,33 @@ def test_return_404_for_invalid_pingout_occur_range_date(client):
 
     assert response.status_code == 404
 
+
 def test_return_200_on_pingout_occur_range_date(client, pingout):
     """ Return 200 when get on pingout url """
 
     response = client.get('/{}'.format(pingout))
 
     assert response.status_code == 200
+
+
+def test_save_file_with_bad_dates_pingout_occur(client, pingout):
+    """ Return 400 for bad formated or empty inital and final dates """
+    response = client.get('/{}?initial_date=203'.format(pingout))
+
+    assert response.status_code == 400
+
+
+def test_save_result_query_file_pingout_occur(client, pingout, db_collection):
+    """ Save csv with the result of the data range occurence query """
+
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+
+    client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
+
+    assert os.path.isfile('files/{}.csv'.format(pingout))
+
+    os.remove('files/{}.csv'.format(pingout))
+

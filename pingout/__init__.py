@@ -6,10 +6,12 @@ from flask import Flask
 from flask import jsonify
 from flask import Response
 from flask import request
+from dateutil import parser
 
 from pingout.db import connect_to_database
 from pingout.db import connect_to_collection
 from pingout.utils import validate_uuid
+from pingout.utils import from_json_to_csv
 from pingout.filters import filter_occurrences_ping_range_date
 
 
@@ -31,9 +33,24 @@ def create_app(test_config=None, db=connect_to_database()):
         if validate_uuid(pingout_uuid):
             pingout = collection.find_one({'uuid': pingout_uuid})
             if pingout:
+                initial = request.args.get('initial_date')
+                final = request.args.get('final_date')
+                try:
+                    initial = parser.parse(initial).date()
+                    final = parser.parse(final).date()
+                except TypeError:
+                    return Response(status=400)
+                query = filter_occurrences_ping_range_date(pingout_uuid,
+                                                           collection, initial,
+                                                           final)
+                from_json_to_csv(query, "{}.csv".format(pingout_uuid))
                 return Response(status=200)
             else:
                 return Response(status=404)
+
+    @app.route("/<string:pingout_uuid>/download")
+    def download_filtered_file(pingout_uuid):
+        pass
 
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():
