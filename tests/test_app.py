@@ -1,7 +1,9 @@
 import pytest
+import datetime
 from uuid import uuid4
 
 from pingout.utils import validate_uuid
+from pingout import TIMEZONE
 
 
 @pytest.fixture
@@ -154,3 +156,15 @@ def test_count_ping_pushed_is_sum_of_previous(client, pingout, db_collection):
 
     assert ping_pushed['count'] == 2
 
+
+def test_date_ping_pushed_on_ping(client, pingout, db_collection):
+    """ Save date of pushed ping as the today datetime """
+
+    client.post('/{}/ping'.format(pingout))
+
+    ping_pushed = db_collection.find_one({'uuid': pingout})['pings'][-1]
+
+    pushed_date = ping_pushed['date']
+    today = datetime.date.today()
+
+    assert pushed_date == today

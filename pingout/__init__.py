@@ -1,4 +1,5 @@
 import os
+import datetime
 from uuid import uuid4
 
 from flask import Flask
@@ -36,15 +37,17 @@ def create_app(test_config=None, db=connect_to_database()):
         if validate_uuid(pingout_uuid):
             pingout = collection.find_one({'uuid': pingout_uuid})
             if pingout:
+                date = datetime.date.today()
                 if len(pingout['pings']) == 0:
                     collection.update_one({'uuid': pingout_uuid},
                                           {'$push': {'pings': {
-                                              'count': 1, 'date': 0}}})
+                                              'count': 1, 'date': date}}})
                 else:
                     count = pingout['pings'][-1]['count']
                     collection.update_one({'uuid': pingout_uuid},
                                           {'$push': {'pings': {
-                                              'count': count+1, 'date': 0}}})
+                                              'count': count+1, 'date': date
+                                              }}})
                 return Response(status=201)
             else:
                 response = jsonify(errors='Pingout not found')
