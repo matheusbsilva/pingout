@@ -1,12 +1,4 @@
-from uuid import UUID
-
-
-def validate_uuid(uuid_string):
-    try:
-        val = UUID(uuid_string, version=4)
-    except ValueError:
-        return False
-    return val.hex == uuid_string
+from pingout.utils import validate_uuid
 
 
 def test_return_200_on_root(client):
