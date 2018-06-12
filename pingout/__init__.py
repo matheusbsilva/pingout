@@ -5,10 +5,12 @@ from uuid import uuid4
 from flask import Flask
 from flask import jsonify
 from flask import Response
+from flask import request
 
 from pingout.db import connect_to_database
 from pingout.db import connect_to_collection
 from pingout.utils import validate_uuid
+from pingout.filters import filter_occurrences_ping_range_date
 
 
 def create_app(test_config=None, db=connect_to_database()):
@@ -23,6 +25,15 @@ def create_app(test_config=None, db=connect_to_database()):
     @app.route("/", methods=['GET'])
     def root():
         return "PINGOUT"
+
+    @app.route("/<string:pingout_uuid>", methods=['GET'])
+    def get_pingouts_occur_range_date(pingout_uuid):
+        if validate_uuid(pingout_uuid):
+            pingout = collection.find_one({'uuid': pingout_uuid})
+            if pingout:
+                return Response(status=200)
+            else:
+                return Response(status=404)
 
     @app.route("/create-pingout", methods=['POST'])
     def create_pingout():

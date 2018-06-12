@@ -158,3 +158,19 @@ def test_date_ping_pushed_on_ping(client, pingout, db_collection):
     today = datetime.date.today()
 
     assert pushed_date == today
+
+
+def test_return_404_for_invalid_pingout_occur_range_date(client):
+    """ Return 404 when get on pingout occur by range date
+    with a invalid uuid"""
+
+    response = client.get('/{}'.format(uuid4().hex))
+
+    assert response.status_code == 404
+
+def test_return_200_on_pingout_occur_range_date(client, pingout):
+    """ Return 200 when get on pingout url """
+
+    response = client.get('/{}'.format(pingout))
+
+    assert response.status_code == 200
