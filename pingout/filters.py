@@ -1,4 +1,5 @@
 import datetime
+import pandas
 
 
 def filter_pingout_all_pings(uuid, collection):
@@ -38,3 +39,19 @@ def filter_pings_range_of_dates(uuid, collection, initial, final):
 
     return pings_range
 
+
+def filter_occurrences_ping_range_date(uuid, collection, initial, final):
+    """ Filter number of occurences of pings by each date
+    in the range given """
+
+    if not isinstance(initial, datetime.date) or\
+            not isinstance(final, datetime.date):
+
+        raise ValueError('Invalid date type')
+
+    pings = filter_pings_range_of_dates(uuid, collection, initial, final)
+    df = pandas.DataFrame(pings)
+    df['date'] = df['date'].astype(str)
+    df = df['date'].value_counts()
+
+    return df.to_dict()
