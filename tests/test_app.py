@@ -33,3 +33,9 @@ def test_return_uuid_when_post_on_create_pingout(client):
     """ Return uuid when post on create_pingout url """
     response = client.post('/create-pingout')
     assert 'uuid' in response.json.keys()
+
+
+def test_return_not_empty_uuid_post_on_create_pingout(client):
+    """ Return not empty uuid when post on create_pingout url """
+    response = client.post('/create-pingout')
+    assert response.json['uuid']
