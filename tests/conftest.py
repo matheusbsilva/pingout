@@ -7,9 +7,9 @@ from pingout.db import connect_to_collection
 
 
 @pytest.fixture
-def app():
+def app(db):
     """ Create a new app instance for each test """
-    app = create_app()
+    app = create_app(db=db)
 
     yield app
 

@@ -63,3 +63,11 @@ def test_return_different_uuid4_post_on_create_pingout(client):
     response2 = client.post('/create-pingout')
 
     assert response1.json['uuid'] != response2.json['uuid']
+
+
+def test_save_uuid_on_db_post_create_pingout(client, db_collection):
+    """ Create a new registry on database with the created uuid
+    when post on create-pingout url """
+
+    response = client.post('/create-pingout')
+    assert db_collection.find_one({'uuid': response.json['uuid']})

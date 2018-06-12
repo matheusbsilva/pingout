@@ -8,7 +8,7 @@ def connect_to_database(engine=pymongo, host='localhost', port=27017):
     return client['pingout_db']
 
 
-def connect_to_collection(db=connect_to_database()):
+def connect_to_collection(db):
     """ Connect to app main collection """
 
     return db['pings_history']
