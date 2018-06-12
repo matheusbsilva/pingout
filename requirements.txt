@@ -19,6 +19,8 @@ mongomock==3.10.0
 more-itertools==4.2.0
 msgpack==0.5.6
 neovim==0.2.6
+numpy==1.14.4
+pandas==0.23.0
 parso==0.2.1
 pbr==4.0.4
 pexpect==4.6.0
@@ -32,6 +34,8 @@ pyflakes==1.6.0
 Pygments==2.2.0
 pymongo==3.6.1
 pytest==3.6.1
+python-dateutil==2.7.3
+pytz==2018.4
 sentinels==1.0.0
 simplegeneric==0.8.1
 six==1.11.0
