@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from flask import Flask
 from flask import jsonify
+from flask import Response
 
 from pingout.db import connect_to_database
 from pingout.db import connect_to_collection
@@ -28,5 +29,10 @@ def create_app(test_config=None, db=connect_to_database()):
         response = jsonify({'uuid': uuid.hex})
         response.status_code = 201
         return response
+
+    @app.route("/<string:pingout_uuid>/ping", methods=['POST'])
+    def ping(pingout_uuid):
+        return Response(status=201)
+
 
     return app

@@ -81,3 +81,11 @@ def test_create_empty_pings_list_post_create_pingout(client, db_collection):
     registry = db_collection.find_one({'uuid': response.json['uuid']})
 
     assert registry['pings'] == []
+
+
+def test_return_201_post_on_ping(client):
+    """ Return 201 when post on ping url """
+    uuid = 'test'
+    response = client.post('/{}/ping'.format(uuid))
+
+    assert response.status_code == 201
