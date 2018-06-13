@@ -63,20 +63,24 @@ def create_app(test_config=None, db=connect_to_database()):
     def download_file(pingout_uuid, filename):
         return send_from_directory(directory='../files', filename=filename)
 
-    @app.route("/create-pingout", methods=['POST'])
+    @app.route("/create-pingout", methods=['POST', 'GET'])
     def create_pingout():
-        uuid = uuid4()
-        collection.insert_one({'uuid': uuid.hex, 'pings': []})
-        response = jsonify({'uuid': uuid.hex})
-        response.status_code = 201
-        return response
+        if request.method == 'POST':
+            uuid = uuid4()
+            collection.insert_one({'uuid': uuid.hex, 'pings': []})
+            response = jsonify({'uuid': uuid.hex})
+            response.status_code = 201
+            return response
+        else:
+            return Response(status=405)
 
     @app.route("/<string:pingout_uuid>/ping", methods=['POST'])
     def ping(pingout_uuid):
         if validate_uuid(pingout_uuid):
             pingout = collection.find_one({'uuid': pingout_uuid})
             if pingout:
-                date = datetime.date.today()
+                date = datetime.datetime.today().replace(second=0,
+                                                         microsecond=0)
                 if len(pingout['pings']) == 0:
                     collection.update_one({'uuid': pingout_uuid},
                                           {'$push': {'pings': {

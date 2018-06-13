@@ -157,7 +157,7 @@ def test_date_ping_pushed_on_ping(client, pingout, db_collection):
     ping_pushed = db_collection.find_one({'uuid': pingout})['pings'][-1]
 
     pushed_date = ping_pushed['date']
-    today = datetime.date.today()
+    today = datetime.datetime.today().replace(second=0, microsecond=0)
 
     assert pushed_date == today
 
@@ -171,12 +171,17 @@ def test_return_404_for_invalid_pingout_occur_range_date(client):
     assert response.status_code == 404
 
 
-def test_return_200_on_pingout_occur_range_date(client, pingout):
-    """ Return 200 when get on pingout url """
+def test_return_302_on_pingout_occur_range_date(client, pingout, db_collection):
+    """ Return 302 when get on pingout url """
 
-    response = client.get('/{}'.format(pingout))
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+    db_collection.update_one({'uuid': pingout}, {
+        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
 
-    assert response.status_code == 200
+    response = client.get('/{}?initial_date=2018-01-01&final_date=2018-12-01'.format(pingout))
+
+    assert response.status_code == 302
 
 
 def test_save_file_with_bad_dates_pingout_occur(client, pingout):
