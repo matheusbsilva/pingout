@@ -13,7 +13,7 @@ def filter_pings_of_date(uuid, collection, date):
     """ Filter all pings of a given date, which must be an
     instance of datetime """
 
-    if not isinstance(date, datetime.date):
+    if not isinstance(date, datetime.datetime):
         raise ValueError('Invalid date type')
 
     pings = filter_pingout_all_pings(uuid, collection)
@@ -25,8 +25,8 @@ def filter_pings_of_date(uuid, collection, date):
 
 def filter_pings_range_of_dates(uuid, collection, initial, final):
     """ Filter pings by range of date"""
-    if not isinstance(initial, datetime.date) or\
-            not isinstance(final, datetime.date):
+    if not isinstance(initial, datetime.datetime) or\
+            not isinstance(final, datetime.datetime):
 
         raise ValueError('Invalid date type')
 
@@ -34,7 +34,8 @@ def filter_pings_range_of_dates(uuid, collection, initial, final):
     pings_range = []
 
     for ping in pings:
-        if ping['date'] >= initial and ping['date'] <= final:
+        if ping['date'].date() >= initial.date() and ping['date'].date() <= final.date():
+            ping['date'] = ping['date'].date()
             pings_range.append(ping)
 
     return pings_range
@@ -44,8 +45,8 @@ def filter_occurrences_ping_range_date(uuid, collection, initial, final):
     """ Filter number of occurences of pings by each date
     in the range given """
 
-    if not isinstance(initial, datetime.date) or\
-            not isinstance(final, datetime.date):
+    if not isinstance(initial, datetime.datetime) or\
+            not isinstance(final, datetime.datetime):
 
         raise ValueError('Invalid date type')
 

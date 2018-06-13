@@ -171,13 +171,13 @@ def test_return_404_for_invalid_pingout_occur_range_date(client):
     assert response.status_code == 404
 
 
-def test_return_302_on_pingout_occur_range_date(client, pingout, db_collection):
+def test_return_302_on_pingout_occur_range_date(client, pingout, db_collection, today):
     """ Return 302 when get on pingout url """
 
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+        '$push': {'pings': {'count': 2, 'date': today}}})
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+        '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
     response = client.get('/{}?initial_date=2018-01-01&final_date=2018-12-01'.format(pingout))
 
@@ -191,13 +191,13 @@ def test_save_file_with_bad_dates_pingout_occur(client, pingout):
     assert response.status_code == 400
 
 
-def test_save_result_query_file_pingout_occur(client, pingout, db_collection):
+def test_save_result_query_file_pingout_occur(client, pingout, db_collection, today):
     """ Save csv with the result of the data range occurence query """
 
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+        '$push': {'pings': {'count': 2, 'date': today}}})
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+        '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
     client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
 
@@ -206,13 +206,13 @@ def test_save_result_query_file_pingout_occur(client, pingout, db_collection):
     os.remove('files/{}.csv'.format(pingout))
 
 
-def test_redirect_after_save_file_pingout_occur(client, pingout, db_collection):
+def test_redirect_after_save_file_pingout_occur(client, pingout, db_collection, today):
     """ Redirect to file download after create csv with the query result """
 
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+        '$push': {'pings': {'count': 2, 'date': today}}})
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+        '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
     response = client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
     redirect_url = response.location.split('http://localhost')[-1]
@@ -227,12 +227,13 @@ def test_return_200_on_get_download_page(client, pingout):
     assert response.status_code == 200
 
 
-def test_return_200_on_get_download_file(client, pingout, db_collection):
+def test_return_200_on_get_download_file(client, pingout, db_collection, today):
     """ Return 200 when get on download file url """
+
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 2, 'date': datetime.date.today()}}})
+        '$push': {'pings': {'count': 2, 'date': today}}})
     db_collection.update_one({'uuid': pingout}, {
-        '$push': {'pings': {'count': 3, 'date': datetime.date(2001, 8, 17)}}})
+        '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
     client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
     response = client.get('{}/download/{}.csv'.format(pingout, pingout))

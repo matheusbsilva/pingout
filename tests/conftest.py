@@ -1,5 +1,6 @@
 import pytest
 import mongomock
+import datetime
 from uuid import uuid4
 
 from pingout import create_app
@@ -39,3 +40,8 @@ def pingout(db_collection):
     db_collection.insert_one({'uuid': uuid, 'pings': []})
 
     return uuid
+
+
+@pytest.fixture
+def today():
+    return datetime.datetime.today().replace(second=0, microsecond=0)

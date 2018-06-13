@@ -39,8 +39,8 @@ def create_app(test_config=None, db=connect_to_database()):
                 initial = request.args.get('initial_date')
                 final = request.args.get('final_date')
                 try:
-                    initial = parser.parse(initial).date()
-                    final = parser.parse(final).date()
+                    initial = parser.parse(initial)
+                    final = parser.parse(final)
                 except TypeError:
                     return Response(status=400)
                 query = filter_occurrences_ping_range_date(pingout_uuid,
