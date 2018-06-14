@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Set development to APP_ENVIRONMENT if it is unset 
+export FLASK_ENV=${APP_ENVIRONMENT:=development}
 export FLASK_APP=pingout
-export FLASK_ENV=development
 flask run

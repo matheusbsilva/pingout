@@ -18,8 +18,13 @@ from pingout.utils import from_json_to_csv
 from pingout.filters import filter_occurrences_ping_range_date
 
 
+SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'dev')
+
+
 def create_app(test_config=None, db=connect_to_database()):
     app = Flask(__name__, template_folder='../pingout/templates')
+    app.config.from_mapping(SECRET_KEY=SECRET_KEY)
+
     collection = connect_to_collection(db)
 
     try:
