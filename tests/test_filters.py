@@ -83,6 +83,6 @@ def test_number_of_occurrences_ping_range_date(pingout, db_collection, today):
 
     pings = filter_occurrences_ping_range_date(pingout, db_collection,
                                                initial, final)
-    assert pings[str(today)] == 2
-    assert pings[str(datetime.datetime(2001, 8, 17, 0, 0))] == 1
-    assert pings[str(datetime.datetime(2018, 8, 17, 0, 0))] == 1
+    assert pings[str(today.date())] == 2
+    assert pings[str(datetime.datetime(2001, 8, 17, 0, 0).date())] == 1
+    assert pings[str(datetime.datetime(2018, 8, 17, 0, 0).date())] == 1
