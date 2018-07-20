@@ -1,3 +1,5 @@
+<p align="center"><img src="https://user-images.githubusercontent.com/14370340/42978617-5260c1b2-8ba4-11e8-932b-89fe566cd730.png" width="350px"></p>
+
 # Pingout
 
 App to count pings(POST) on a defined url, identified by an uuid, and export the count and days of those pings as a csv file. I created to use it as a counter of continuous deploys per day.
