@@ -70,3 +70,13 @@ To export a CSV with your pings amount by date, first you have to query it using
   
 2. After that you'll be redirect to a page to download the CSV file with the query result.
 
+
+## Using to count continuous deploys
+
+1. Create your Pingout as showed above
+2. Add to your `.travis.yml` on the stage `after_deploy`:  
+`curl -X POST http://localhost:5000/YOURUNIQUEUUID/ping`
+
+**Obs.:** You may set your Pingout UUID as a environment variable on travis.
+
+[Example](https://github.com/fga-gpp-mds/2018.1-TropicalHazards-BI/blob/development/.travis.yml)
