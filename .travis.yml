@@ -1,0 +1,40 @@
+sudo: required
+
+services:
+  - docker
+
+cache:
+  directories:
+    - "$HOME/google-cloud-sdk/"
+
+env:
+  global:
+    - GOOGLE_APPLICATION_CREDENTIALS=~/gcloud-service-key.json
+    - PINGOUT_IMAGE=pingout
+    - PINGOUT_DEPLOYMENT=pingout-deploy
+    - PINGOUT_CONTAINER=pingout-container
+    # CLOUDSDK_CORE_DISABLE_PROMPTS disable interactive prompts
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+before_script:
+  - docker-compose up -d 
+script:
+  - docker-compose exec web pytest tests
+  - docker-compose exec web rm -r tests/__pycache__ 
+before_deploy:
+  # If google-cloud-sdk bin doesn't exist
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then
+      rm -rf $HOME/google-cloud-sdk;
+      curl https://sdk.cloud.google.com | bash > /dev/null;
+    fi
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud --quiet components update kubectl 
+  - gcloud --quiet version
+deploy:
+  - provider: script
+    script: chmod +x gcloud/deploy-stag.sh && bash gcloud/deploy-stag.sh
+    skip_cleanup: true
+    on:
+      branch: dev 
+notifications:
+  email: false
