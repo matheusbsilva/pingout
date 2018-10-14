@@ -34,7 +34,7 @@ def create_app(test_config=None, db=connect_to_database()):
 
     @app.route("/")
     def root():
-        return "PINGOUT!"
+        return "PINGOUT!!! Up and running"
 
     @app.route("/<string:pingout_uuid>", methods=['GET'])
     def get_pingouts_occur_range_date(pingout_uuid):
