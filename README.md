@@ -66,7 +66,7 @@ When you ping, Pingout will save the date of that ping and increment the pings c
 To export a CSV with your pings amount by date, first you have to query it using the date range you want by the params `initial_date` and `final_date` on the format **YYYY-MM-DD**:
 
 1. Access the url:  
-[http://localhost:5000/YOURUNIQUEUUID/?initial_date=2018-01-01&final_date=2018-02-02]()
+[http://localhost:5000/YOURUNIQUEUUID/filter/?initial_date=2018-01-01&final_date=2018-02-02]()
   
 2. After that you'll be redirect to a page to download the CSV file with the query result.
 
