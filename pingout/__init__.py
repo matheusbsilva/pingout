@@ -37,6 +37,25 @@ def create_app(test_config=None, db=connect_to_database()):
         return "PINGOUT!!! Up and running"
 
     @app.route("/<string:pingout_uuid>", methods=['GET'])
+    def get_pingout(pingout_uuid):
+        if validate_uuid(pingout_uuid):
+            pingout = collection.find_one({'uuid': pingout_uuid})
+            if pingout:
+                pingout.pop('_id')
+                response = jsonify(pingout=pingout)
+                response.status_code = 200
+
+                return response
+            else:
+                response = jsonify(errors='Pingout not found')
+                response.status_code = 404
+                return response
+        else:
+            response = jsonify(errors='Bad format uuid')
+            response.status_code = 400
+            return response
+
+    @app.route("/<string:pingout_uuid>/filter", methods=['GET'])
     def get_pingouts_occur_range_date(pingout_uuid):
         if validate_uuid(pingout_uuid):
             pingout = collection.find_one({'uuid': pingout_uuid})

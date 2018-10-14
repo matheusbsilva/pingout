@@ -179,14 +179,14 @@ def test_return_302_on_pingout_occur_range_date(client, pingout, db_collection, 
     db_collection.update_one({'uuid': pingout}, {
         '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
-    response = client.get('/{}?initial_date=2018-01-01&final_date=2018-12-01'.format(pingout))
+    response = client.get('/{}/filter?initial_date=2018-01-01&final_date=2018-12-01'.format(pingout))
 
     assert response.status_code == 302
 
 
 def test_save_file_with_bad_dates_pingout_occur(client, pingout):
     """ Return 400 for bad formated or empty inital and final dates """
-    response = client.get('/{}?initial_date=203'.format(pingout))
+    response = client.get('/{}/filter?initial_date=203'.format(pingout))
 
     assert response.status_code == 400
 
@@ -199,7 +199,7 @@ def test_save_result_query_file_pingout_occur(client, pingout, db_collection, to
     db_collection.update_one({'uuid': pingout}, {
         '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
-    client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
+    client.get('/{}/filter?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
 
     assert os.path.isfile('files/{}.csv'.format(pingout))
 
@@ -214,7 +214,7 @@ def test_redirect_after_save_file_pingout_occur(client, pingout, db_collection, 
     db_collection.update_one({'uuid': pingout}, {
         '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
-    response = client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
+    response = client.get('/{}/filter?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
     redirect_url = response.location.split('http://localhost')[-1]
     assert redirect_url == "/{}/download".format(pingout)
 
@@ -235,7 +235,7 @@ def test_return_200_on_get_download_file(client, pingout, db_collection, today):
     db_collection.update_one({'uuid': pingout}, {
         '$push': {'pings': {'count': 3, 'date': datetime.datetime(2001, 8, 17, 0, 0)}}})
 
-    client.get('/{}?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
+    client.get('/{}/filter?initial_date=2018-01-01&final_date=2020-01-01'.format(pingout))
     response = client.get('{}/download/{}.csv'.format(pingout, pingout))
 
     assert response.status_code == 200
