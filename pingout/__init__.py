@@ -76,7 +76,7 @@ def create_app(test_config=None, db=connect_to_database()):
                 return Response(status=404)
 
     @app.route("/<string:pingout_uuid>/download")
-    def download_filtered_file(pingout_uuid):
+    def render_download_file(pingout_uuid):
         if request.method == 'GET':
             filename = "{}.csv".format(pingout_uuid)
             return render_template('download.html',
