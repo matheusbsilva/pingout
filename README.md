@@ -1,82 +1,73 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/14370340/42978617-5260c1b2-8ba4-11e8-932b-89fe566cd730.png" width="350px"></p>
 
-# Pingout
+# Pingout 
+App para contagem de pings em uma determinada URL, essa contagem pode ser filtrada e exportada em formato CSV. 
 
-App to count pings(POST) on a defined url, identified by an uuid, and export the count and days of those pings as a csv file. I created to use it as a counter of continuous deploys per day.
+## Objetivo
+O Pingout foi concebido para resolver o problema de coleta automatizada de métricas de contagem de deploys contínuos em um determinado período da escolha do usuário.
 
-## Set up
+## Contexto
 
-### Using docker
-```
-docker-compose up
-```
-Access the root url [http://localhost:5000](http://localhost:5000)
+Observ, projeto de EPS-MDS 2018.1.
 
-### Using virtual env
-```
-python3 -m venv path/to/your/env
+![](https://raw.githubusercontent.com/fga-eps-mds/2018.1-TropicalHazards-BI/development/docs/project_artefacts/pipeline_devops/pipeline_DevOps.png)
 
-source path/to/your/env/bin/activate
+Gráfico de deploys
 
-pip install -r requirements.txt
-```
-When you run with venv you have to initate a instance of MongoDB, which is needed for the app usage, by yourself. I recommend running the [docker image of mongo](https://hub.docker.com/_/mongo/).
+![](https://user-images.githubusercontent.com/14370340/46961019-36dd6f00-d076-11e8-8339-723b3b344eba.png)
 
-After that run the server with:
-```
-./run.sh
-```
+## Tecnologias
 
-## Running the tests
+### Flask
+![](https://mherman.org/presentations/flask-kubernetes/images/flask-logo.png)
 
-### Using docker
+### MongoDB
+![](https://zdnet3.cbsistatic.com/hub/i/r/2018/02/16/8abdb3e1-47bc-446e-9871-c4e11a46f680/resize/370xauto/8a68280fd20eebfa7789cdaa6fb5eff1/mongo-db-logo.png)
 
-```
-docker-compose up -d 
+### Pytest
+![](https://cdn-images-1.medium.com/max/1600/1*qmz2bNVJ64273TA4TbFxZw.png)
 
-docker-compose exec web pytest tests
-```
+### Pymongo e Mongomock 
+![](https://sahilsehwag.files.wordpress.com/2017/10/mongopython.png?w=300&#038;h=300&#038;crop=1)
 
-### Using virtual env
-After the set up steps run:
-```
-pytest tests
-```
+## Funcionalidades
 
-## Usage
-### 1. Create a Pingout
-First you have to create a Pingout, which will be the identifier of your pings, each Pingout receives an unique UUID, you can create performing a **POST** on the url `/create-pingout`:  
+1. Criação de um Pingout, cada Pingout recebe um UUID único
 ```
 curl -X POST http://localhost:5000/create-pingout 
 ```
-The response of the post request will be your Pingout UUID, **SAVE IT**.
 ```json
 {
   "uuid": "YOURUNIQUEUUID"
 }
 ```
-### 2. PING!
-Once you have a created pingout you can ping on it whenever you want by performing a POST on the url `UUID/ping`:
+
+2. Ping! Ao realizar um ping a data de ocorrência é armazenada
 ```
 curl -X POST http://localhost:5000/YOURUNIQUEUUID/ping 
 ```
-When you ping, Pingout will save the date of that ping and increment the pings counter.
 
-### 3. Export it
-To export a CSV with your pings amount by date, first you have to query it using the date range you want by the params `initial_date` and `final_date` on the format **YYYY-MM-DD**:
+3. Filtragem e exportação. É possível filtrar todos os pings dentro de um período de tempo, para obter informação da contagem de pings em cada dia dentro do período filtrado. O filtro ocorre através de dois parâmetros data inicial(`initial_date`) e data final(`final_date`) no formato **YYYY-MM-DD**. Ao realizar a filtragem os resultados estarão disponíveis em formato CSV.
 
-1. Access the url:  
 [http://localhost:5000/YOURUNIQUEUUID/filter/?initial_date=2018-01-01&final_date=2018-02-02]()
-  
-2. After that you'll be redirect to a page to download the CSV file with the query result.
 
+4. Obter informação de todos os pings. Para obter a informações de todos os pings de um Pingout basta acessar a página de detalhe de um Ping.
 
-## Using to count continuous deploys
+[http://localhost:5000/YOURUNIQUEUUID]()
 
-1. Create your Pingout as showed above
-2. Add to your `.travis.yml` on the stage `after_deploy`:  
-`curl -X POST http://localhost:5000/YOURUNIQUEUUID/ping`
+## [Instalação e uso](installation_usage.md)
 
-**Obs.:** You may set your Pingout UUID as a environment variable on travis.
+## TBL2 F3
 
-[Example](https://github.com/fga-gpp-mds/2018.1-TropicalHazards-BI/blob/development/.travis.yml)
+Para a fase 3 do TBL 2 será necessário forkar o repositório do Pingout que estará disponível na organização da disciplina.
+
+1. Analizar o código e definir os casos de teste;
+2. Implementar os testes;
+3. Sugerir melhorias no software de acordo com os bugs ou não conformidades encontradas no código.
+4. Realizar um PR para o repositório que se encontra na organização da disciplina
+    - Descrever no PR as sugestões de melhoria e casos de teste em que o sistema falha
+
+### Dúvidas durante a implementação?
+**Abra uma Issue** no repositório do Pingout na organização da disciplina e me marque, que eu vou tentar responder o mais rápido possível :v:
+
+Se por algum motivo não quiserem abrir a Issue me mandem um mensagem no telegram: **@matheusbss**
