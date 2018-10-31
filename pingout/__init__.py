@@ -6,9 +6,8 @@ from flask import Flask
 from flask import jsonify
 from flask import Response
 from flask import request
-from flask import redirect
-from flask import render_template
 from flask import send_from_directory
+from flask import url_for
 from dateutil import parser
 
 from pingout.db import connect_to_database
@@ -22,7 +21,7 @@ SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'dev')
 
 
 def create_app(test_config=None, db=connect_to_database()):
-    app = Flask(__name__, template_folder='../pingout/templates')
+    app = Flask(__name__)
     app.config.from_mapping(SECRET_KEY=SECRET_KEY)
 
     collection = connect_to_collection(db)
@@ -70,18 +69,18 @@ def create_app(test_config=None, db=connect_to_database()):
                 query = filter_occurrences_ping_range_date(pingout_uuid,
                                                            collection, initial,
                                                            final)
-                from_json_to_csv(query, "{}.csv".format(pingout_uuid))
-                return redirect('/{}/download'.format(pingout_uuid))
+                filename = '{}.csv'.format(pingout_uuid)
+                from_json_to_csv(query, filename)
+                url = url_for('download_file',
+                              pingout_uuid=pingout_uuid,
+                              filename=filename, _external=True)
+                response = jsonify(message="File created with success!",
+                                   url=url)
+                response.status_code = 200
+
+                return response
             else:
                 return Response(status=404)
-
-    @app.route("/<string:pingout_uuid>/download")
-    def render_download_file(pingout_uuid):
-        if request.method == 'GET':
-            filename = "{}.csv".format(pingout_uuid)
-            return render_template('download.html',
-                                   uuid=pingout_uuid,
-                                   filename=filename)
 
     @app.route("/<string:pingout_uuid>/download/<path:filename>")
     def download_file(pingout_uuid, filename):
